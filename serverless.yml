@@ -1,0 +1,85 @@
+
+service: pushNotification
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  timeout: 30
+  memorySize: 512
+  lambdaHashingVersion: 20201221
+  apiName: apiGateway-${self:provider.stage}
+  region: us-east-1
+  environment:
+    REGION: ${self:provider.region}
+    ENVIROMENT: ${self:provider.stage}
+    PENDING_QUEUE:
+      Ref: PendingQueue
+    PENDING_QUEUE_NAME: PendingPushNotificationQueue
+    DYNAMOTABLE: ${self:provider.stage}-PushNotification
+  
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+      Resource: "arn:aws:sqs:${self:provider.region}:*:${self:provider.environment.PENDING_ORDER_QUEUE_NAME}"
+
+functions:
+  createRegistry:
+    handler: src/handler.register
+    events:
+      - http: 
+          method: POST 
+          path: /ps/create
+  sendMsgPNS:
+    handler: src/handler.msgPns
+    events:
+      - http: 
+          method: POST 
+          path: /ps/create
+  sendPNS:
+    handler: src/handler.send
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - PendingQueue
+              - Arn
+          batchSize: 1
+  getRegistry:
+    handler: src/handler.exist
+    events:
+      - http: 
+          method: GET 
+          path: /ps/exist/{registry}
+
+resources:
+  Resources:
+    PendingQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:provider.environment.PENDING_QUEUE_NAME}
+    DynamoTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMOTABLE}
+        AttributeDefinitions:
+          - AttributeName: idPNS
+            AttributeType: S
+        KeySchema:
+          - AttributeName: idPNS
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
