@@ -1,10 +1,10 @@
 'use strict';
 
 const { v4: uuidv4 } = require('uuid');
-const orderManager = require('./components/dynamoManager')
-const sqsManager = require('./components/sqsManager')
-const pnsManager = require('./components/pushNotificationManager')
-const utils = require('./utils')
+const dynamoManager = require('./components/dynamoManager');
+const sqsManager = require('./components/sqsManager');
+const pnsManager = require('./components/pushNotificationManager');
+const utils = require('./utils');
 
 /*
   register
@@ -26,7 +26,7 @@ module.exports.register = (event, context, callback) => {
     isActive: true
   }
 
-  orderManager.save(pn)
+  dynamoManager.save(pn)
   .then(resp => callback())
   .catch(err => callback(err));
 }
@@ -46,8 +46,7 @@ module.exports.msgPns = (event, context, callback) => {
 
   let token = '';
 
-  orderManager
-  .exist(idPNS)
+  dynamoManager.exist(idPNS)
   .then(pn => {
     token = pn.token
   })
@@ -61,7 +60,7 @@ module.exports.msgPns = (event, context, callback) => {
     body
   }
 
-  sqsManager.sendToSQS(msg);
+  sqsManager.sendToSQS(msg,callback);
 };
 
 /*
@@ -88,7 +87,7 @@ module.exports.exist = (event, context, callback) => {
   const registry = event.pathParameters && event.pathParameters.registry;
 	
   if (registry !== null) {
-		orderManager
+		dynamoManager
 			.exist(registry)
 			.then(pn => {
 				utils.sendResponse(200, pn, callback);
@@ -97,6 +96,6 @@ module.exports.exist = (event, context, callback) => {
 				utils.sendResponse(500, 'Hubo un error al procesar el pedido', callback);
 			});
 	} else {
-		sendResponse(400, 'Falta el orderId', callback);
+		utils.sendResponse(400, 'Falta el orderId', callback);
 	}
 }

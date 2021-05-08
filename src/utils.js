@@ -4,7 +4,7 @@
   Funciones
 */
 
-module.exports.sendResponse(statusCode, message, callback) {
+module.exports.sendResponse = (statusCode, message, callback) => {
 	const response = {
 		statusCode: statusCode,
 		body: JSON.stringify(message)

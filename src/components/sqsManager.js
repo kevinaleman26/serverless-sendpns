@@ -1,12 +1,12 @@
 'use strict';
-const utils = require('./utils')
+const utils = require('../utils')
 const AWS = require('aws-sdk');
 
 const sqs = new AWS.SQS({ region: process.env.REGION });
 const QUEUE_URL = process.env.PENDING_QUEUE;
 
 
-module.exports.sendToSQS = msg => {
+module.exports.sendToSQS = (msg,callback) => {
 
     const params = {
 		MessageBody: JSON.stringify(msg),
