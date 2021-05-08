@@ -41,13 +41,13 @@ functions:
     events:
       - http: 
           method: POST 
-          path: /ps/create
+          path: /ps/create/register
   sendMsgPNS:
     handler: src/handler.msgPns
     events:
       - http: 
           method: POST 
-          path: /ps/create
+          path: /ps/create/pnsmsg
   sendPNS:
     handler: src/handler.send
     events:
