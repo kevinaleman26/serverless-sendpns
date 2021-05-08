@@ -49,18 +49,17 @@ module.exports.msgPns = (event, context, callback) => {
   dynamoManager.exist(idPNS)
   .then(pn => {
     token = pn.token
+    const msg = {
+      token,
+      title,
+      body
+    }
+    
+    sqsManager.sendToSQS(msg,callback);
   })
   .catch(error => {
     utils.sendResponse(500, 'Hubo un error al procesar el pedido', callback);
   });
-
-  const msg = {
-    token,
-    title,
-    body
-  }
-
-  sqsManager.sendToSQS(msg,callback);
 };
 
 /*
