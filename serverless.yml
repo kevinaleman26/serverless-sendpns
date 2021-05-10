@@ -1,5 +1,5 @@
 
-service: pushNotification
+service: awsComponents
 
 frameworkVersion: '2'
 
@@ -10,7 +10,7 @@ provider:
   timeout: 30
   memorySize: 512
   lambdaHashingVersion: 20201221
-  apiName: apiGateway-${self:provider.stage}
+  apiName: apiGateway-${self:service}-${self:provider.stage}
   region: us-east-1
   environment:
     REGION: ${self:provider.region}

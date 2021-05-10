@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const dynamoManager = require('./components/dynamoManager');
 const sqsManager = require('./components/sqsManager');
 const pnsManager = require('./components/pushNotificationManager');
+const glueManager = require('./components/glueManager');
 const utils = require('./utils');
 
 /*
@@ -44,17 +45,14 @@ module.exports.msgPns = (event, context, callback) => {
   const {idPNS, body} = request;
   const title = process.env.PNSTITLE
 
-  let token = '';
-
   dynamoManager.exist(idPNS)
   .then(pn => {
-    token = pn.token
+    const { token } = pn
     const msg = {
       token,
       title,
       body
     }
-    
     sqsManager.sendToSQS(msg,callback);
   })
   .catch(error => {
@@ -97,4 +95,17 @@ module.exports.exist = (event, context, callback) => {
 	} else {
 		utils.sendResponse(400, 'Falta el orderId', callback);
 	}
+}
+
+/*
+  glueStatus
+*/
+
+module.exports.glueStatus = (event, context, callback) => {
+
+  const request = JSON.parse(event.body);
+  const {jobName, maxResult} = request;
+
+  glueManager.glueTaskStatus(jobName,maxResult,callback);
+  
 }

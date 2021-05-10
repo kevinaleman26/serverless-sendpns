@@ -1,5 +1,5 @@
 {
-  "name": "pushNotification",
+  "name": "awscomponents",
   "version": "1.0.0",
   "description": "",
   "main": "handler.js",
