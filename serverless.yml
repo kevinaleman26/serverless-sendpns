@@ -73,6 +73,12 @@ functions:
       - http: 
           method: POST 
           path: /ps/create/gluestatus
+  getRDSTable:
+    handler: src/handler.rdsTest
+    events:
+      - http: 
+          method: GET 
+          path: /ps/rds
 
 resources:
   Resources:
