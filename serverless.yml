@@ -19,6 +19,14 @@ provider:
       Ref: PendingQueue
     PENDING_QUEUE_NAME: PendingPushNotificationQueue
     DYNAMOTABLE: ${self:provider.stage}-PushNotification
+  vpc:
+    securityGroupIds: [
+      { "Fn:ImportValue" : "sg-1e41b01b"}
+    ]
+    subnetIds: [
+      { "Fn:ImportValue" : "subnet-bd10689c"},
+      { "Fn:ImportValue" : "subnet-0bf0f246"}
+    ]
   
   iamRoleStatements:
     - Effect: Allow
