@@ -67,6 +67,12 @@ functions:
       - http: 
           method: GET 
           path: /ps/exist/{registry}
+  glueStatus:
+    handler: src/handler.glueStatus
+    events:
+      - http: 
+          method: POST 
+          path: /ps/create/gluestatus
 
 resources:
   Resources:
