@@ -5,6 +5,8 @@ const dynamoManager = require('./components/dynamoManager');
 const sqsManager = require('./components/sqsManager');
 const pnsManager = require('./components/pushNotificationManager');
 const glueManager = require('./components/glueManager');
+const rdsManager = require('./components/rdsManager');
+
 const utils = require('./utils');
 
 /*
@@ -107,5 +109,11 @@ module.exports.glueStatus = (event, context, callback) => {
   const {jobName, maxResult} = request;
 
   glueManager.glueTaskStatus(jobName,maxResult,callback);
-  
+
+}
+
+module.exports.rdsTest = (event, context, callback) => {
+
+  rdsManager.showTables(callback);
+
 }
