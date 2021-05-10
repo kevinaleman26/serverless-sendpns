@@ -34,6 +34,10 @@ provider:
       Action:
         - sqs:SendMessage
       Resource: "arn:aws:sqs:${self:provider.region}:*:${self:provider.environment.PENDING_QUEUE_NAME}"
+    - Effect: Allow
+      Action:
+        - glue:*
+      Resource: "*"
 
 functions:
   createRegistry:
