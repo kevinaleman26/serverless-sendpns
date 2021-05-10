@@ -13,12 +13,13 @@ module.exports.glueTaskStatus = (jobName,maxResult,callback) => {
       
     glue.getJobRuns(params, function(err, data) {
         if (err) utils.sendResponse(500,'Hubo algun error', callback)
-        else     
-            msg = {
-                jobName,
-                maxResult,
-                executionHistory: data.JobRuns
-            }
-            utils.sendResponse(200,msg, callback)
+        else {
+            const msg = {
+               jobName,
+               maxResult,
+               executionHistory: data.JobRuns
+           }
+           utils.sendResponse(200,msg, callback)
+       }
     });
 }
